@@ -113,11 +113,15 @@ function App() {
   }
 
   function handleRefresh(){
+    clearTimeout(timeOut());
     setBreakLength(5);
     setSessionLength(25);
     setTimeLeft(1500);
     setTimingType("session");
     setPlay(false);
+    const audio = document.getElementById("beep");
+    audio.pause()
+    audio.currentTime = 0;
    }
 
   function resetTimer(){
@@ -129,17 +133,22 @@ function App() {
     }
 
     if( !timeLeft && timingType === "BREAK"){
-       audio.pause();
-       audio.currenttime = 0;
-       setTimingType("session");
        setTimeLeft(sessionLength * 60);
+       setTimingType("session");
+       audio.pause();
+       audio.currentTime = 0;
     }
   }
 
   
   useEffect( function clock(){
+    if(play){
     timeOut();
     resetTimer();
+  }
+  else{
+   clearTimeout(timeOut())
+   }
   }, [play,timeLeft]);
 
   return (
@@ -194,7 +203,7 @@ function App() {
             </div>
          </div>
 
-         <div className="col-lg-3 col-8 rounded-5" style={{border: "0.5rem solid #13353a"}}>
+         <div className="col-lg-3 col-8 rounded-5 mt-3" style={{border: "0.5rem solid #13353a"}}>
              <p className={ timingType === "session" 
               ? ( timeLeft <= 60 ? "text-danger text-center mb-1 mt-1 fs-2" : "text-light text-center mb-1 mt-1 fs-2")
               : "break text-center mb-1 mt-1 fs-2"}>
@@ -219,7 +228,7 @@ function App() {
               onClick={handleRefresh}/>      
          </div>
 
-         <div className="mt-3 h-auto d-flex flex-column align-items-center">
+         <div className="mt-1 h-auto d-flex flex-column align-items-center">
           <p>Designed and Coded By</p>
           <p>Leslie Abayo</p>
          </div>
